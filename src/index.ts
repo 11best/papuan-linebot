@@ -2,8 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { carBubble } from "./replyBubble";
 
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
 
 const PORT = parseInt(process.env["PORT"] || "");
 const TOKEN = process.env["LINE_TOKEN"] || "";
@@ -27,14 +26,14 @@ async function callbackHandler(c: any) {
 
   if (messageType == "text") {
     const textMessage = body.events[0].message.text;
-
-    if (textMessage === "car") {
-      reply(body.events[0].replyToken, carBubble);
-    } else {
-      reply(body.events[0].replyToken, {
-        type: "text",
-        text: textMessage,
-      });
+    switch (textMessage) {
+      case "car":
+        reply(body.events[0].replyToken, carBubble);
+      default:
+        reply(body.events[0].replyToken, {
+          type: "text",
+          text: "เมี๊ยว",
+        });
     }
   }
 
