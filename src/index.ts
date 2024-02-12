@@ -5,24 +5,17 @@ import { carBubble } from "./replyBubble";
 const dotenv = require("dotenv");
 dotenv.config();
 
-const PORT = 3000;
-const LINE_MESSAGING_API = "https://api.line.me/v2/bot";
-const LINE_HEADER = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${process.env["LINE_TOKEN"] || ""}`,
-};
+const PORT = parseInt(process.env["PORT"] || "");
+const TOKEN = process.env["LINE_TOKEN"] || "";
+const MESSAGING_API = process.env["LINE_MESSAGING_API"];
 
 const app = new Hono();
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
+app.get("/", (c) => c.text("Hello Hono!"));
+app.get("/webhook", (c) => c.text("Webhook is ready!"));
+app.post("/webhook", async (c) => callbackHandler(c));
 
-app.get("/webhook", (c) => {
-  return c.text("Webhook is ready!");
-});
-
-app.post("/webhook", async (c) => {
+async function callbackHandler(c: any) {
   const body = await c.req.raw.json();
 
   if (!body.events) {
@@ -51,15 +44,15 @@ app.post("/webhook", async (c) => {
     "HTTP POST request sent to the webhook URL!" + body.events[0],
     200
   );
-});
+}
 
-const reply = (token: any, payload: any) => {
+const reply = (token: string, payload: any) => {
   console.log("payload", payload);
-  const url = `${LINE_MESSAGING_API}/message/reply`;
+  const url = `${MESSAGING_API}/message/reply`;
   const requestOptions = {
     method: "POST",
     headers: {
-      ...LINE_HEADER,
+      Authorization: `Bearer ${TOKEN}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -81,7 +74,6 @@ const reply = (token: any, payload: any) => {
 };
 
 console.log(`Server is running on port ${PORT}`);
-
 serve({
   fetch: app.fetch,
   port: PORT,
