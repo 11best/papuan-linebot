@@ -2,12 +2,15 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { carBubble } from "./replyBubble";
 
+const dotenv = require("dotenv");
+dotenv.config();
+
+const PORT = 3000;
 const LINE_MESSAGING_API = "https://api.line.me/v2/bot";
 const LINE_HEADER = {
   "Content-Type": "application/json",
-  Authorization: `Bearer xxxx`,
+  Authorization: `Bearer ${process.env["LINE_TOKEN"] || ""}`,
 };
-const PORT = 3000;
 
 const app = new Hono();
 
