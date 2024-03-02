@@ -1,8 +1,9 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { carBubble } from "./replyBubble";
-
-require("dotenv").config();
+import dotenv from "dotenv";
+import { replySheetData } from "./google-sheet";
+dotenv.config();
 
 const PORT = parseInt(process.env["PORT"] || "");
 const TOKEN = process.env["LINE_TOKEN"] || "";
@@ -29,15 +30,20 @@ async function callbackHandler(c: any) {
     switch (textMessage) {
       case "car":
         reply(body.events[0].replyToken, carBubble);
+        break;
+      case "sheet":
+        reply(body.events[0].replyToken, {
+          type: "text",
+          text: await replySheetData(),
+        });
+        break;
       default:
         reply(body.events[0].replyToken, {
           type: "text",
-          text: "เมี๊ยว",
+          text: textMessage,
         });
     }
   }
-
-  console.log("HTTP POST request sent to the webhook URL!", body.events[0]);
 
   return c.text(
     "HTTP POST request sent to the webhook URL!" + body.events[0],
