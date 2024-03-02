@@ -1,5 +1,5 @@
-# p a p u a n - l i n e b o t
-![papuan icon - 1 crop](https://github.com/11best/papuan-linebot/assets/97434421/78be7840-cb5f-4276-9b46-959dccbef01d)
+# p a p u a n - l i n e b o t ![papuan icon - 1 crop](https://github.com/11best/papuan-linebot/assets/97434421/78be7840-cb5f-4276-9b46-959dccbef01d)
+
 
 ```
 npm i
