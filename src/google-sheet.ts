@@ -94,8 +94,15 @@ async function getDataFromSheet(authClient) {
     range: "A2:B",
   });
   const values = res.data.values;
-
-  console.log("sheet", values);
+  return values;
 }
 
-authorize().then(getDataFromSheet).catch(console.error);
+export async function replySheetData() {
+  const data = await authorize().then(getDataFromSheet).catch(console.error);
+  if (data && data.length > 0) {
+    const replyMag = data.map((d: string) => {
+      return `Name: ${d[0]}\nTracking: ${d[1]}`;
+    });
+    return replyMag.join("\n\n");
+  }
+}
